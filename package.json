@@ -1,6 +1,6 @@
 {
   "name": "farseer",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "This simple module monitors the Hearthstone log file and emits events based on important events from the log.",
   "main": "lib/index.js",
   "dependencies": {
@@ -12,16 +12,18 @@
   "devDependencies": {
     "babel-cli": "^6.14.0",
     "chai": "^3.2.0",
+    "cpr": "^2.0.2",
+    "cross-env": "^3.1.4",
     "mocha": "^3.1.0",
     "mocha-junit-reporter": "^1.11.2",
     "sinon": "^1.17.4",
     "sinon-chai": "^2.8.0"
   },
   "scripts": {
-    "compile": "babel -d lib/ src/ && cp src/log.config lib/",
+    "compile": "babel -d lib/ src/ && cpr src/log.config lib/log.config -o",
     "prepublish": "npm run compile",
     "start": "node bootstrap",
-    "test": "NODE_ENV=test mocha"
+    "test": "cross-env NODE_ENV=test mocha"
   },
   "keywords": [
     "hearthstone",
