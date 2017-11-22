@@ -23,11 +23,18 @@ export default class extends EventEmitter {
     log.main('config file path: %s', this.options.configFile);
     log.main('log file path: %s', this.options.logFile);
 
-    // Copy local config file to the correct location.
-    // We're just gonna do this every time.
+    // Copy local config file to the correct location. Unless already exists.
+    // Don't want to break other trackers
     var localConfigFile = path.join(__dirname, './log.config');
-    fs.createReadStream(localConfigFile).pipe(fs.createWriteStream(this.options.configFile));
-    log.main('Copied log.config file to force Hearthstone to write to its log file.');
+    fs.access(localConfigFile, (err) => {
+      if (err) {
+        // log config file does not exist
+        fs.createReadStream(localConfigFile).pipe(fs.createWriteStream(this.options.configFile));
+        log.main('Copied log.config file to force Hearthstone to write to its log file.');
+      } else {
+        log.main('Using pre-exisiting log.config file.');
+      }
+    });
   }
 
   start () {
