@@ -1,6 +1,6 @@
 {
   "name": "farseer",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "This simple module monitors the Hearthstone log file and emits events based on important events from the log.",
   "main": "lib/index.js",
   "dependencies": {
