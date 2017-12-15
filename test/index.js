@@ -66,13 +66,13 @@ describe('hearthstone-log-watcher', function () {
       var expectedState = {
         gameOverCount: 2,
         players: [
-          {name: 'artaios', entityId: 2, id: 1, status: 'LOST', team: 'FRIENDLY' },
-          {name: 'Phaust', entityId: 3, id: 2, status: 'WON', team: 'OPPOSING'}
+          {name: 'artaios', entityId: 2, id: 1, status: 'WON', team: 'FRIENDLY' },
+          {name: 'Souldef', entityId: 3, id: 2, status: 'LOST', team: 'OPPOSING'}
         ],
         playerCount: 2
       };
       var lineReader = readline.createInterface({
-        input: fs.createReadStream(__dirname + '/fixture/hearthstone_2016_07_14_23_06_31.log')
+        input: fs.createReadStream(__dirname + '/fixture/hearthstone_2017_12_15_16_04_00.log')
       });
 
       lineReader.on('line', function (line) {
@@ -91,7 +91,6 @@ describe('hearthstone-log-watcher', function () {
 
   describe('new player parsing', function () {
     it('returns player ids', function () {
-      // 2016-07-14 23:14:06.191: [Power] GameState.DebugPrintPower() -     Player EntityID=3 PlayerID=2 GameAccountId=[hi=144115198130930503 lo=17958543]
       var line = "2016-07-14 23:14:06.187: [Power] GameState.DebugPrintPower() -     Player EntityID=2 PlayerID=1 GameAccountId=[hi=144115198130930503 lo=17091053]";
       var players = [];
       players = newPlayerIds(line, players);
@@ -110,12 +109,12 @@ describe('hearthstone-log-watcher', function () {
 
   describe('handle zone changes', function () {
     it('handles a normal game card', function () {
-      var line = '2016-07-14 23:07:36.270: [Zone] ZoneChangeList.ProcessChanges() - id=2 local=False [name=Elise Starseeker id=15 zone=HAND zonePos=0 cardId=LOE_079 player=1] zone from FRIENDLY DECK -> FRIENDLY HAND';
+      var line = '[Zone] ZoneChangeList.ProcessChanges() - id=167 local=False [entityName=Lyra the Sunshard id=7 zone=HAND zonePos=0 cardId=UNG_963 player=1] zone from FRIENDLY DECK -> FRIENDLY HAND';
       var parserState = { players: [], playerCount: 0 };
       var expected = {
-        cardName: 'Elise Starseeker',
-        entityId: 15,
-        cardId: 'LOE_079',
+        cardName: 'Lyra the Sunshard',
+        entityId: 7,
+        cardId: 'UNG_963',
         playerId: 1,
         fromTeam: 'FRIENDLY',
         fromZone: 'DECK',
@@ -129,12 +128,12 @@ describe('hearthstone-log-watcher', function () {
     });
 
     it('handles heros', function () {
-      var line = '2016-07-14 23:07:34.867: [Zone] ZoneChangeList.ProcessChanges() - id=1 local=False [name=Garrosh Hellscream id=64 zone=PLAY zonePos=0 cardId=HERO_01 player=1] zone from  -> FRIENDLY PLAY (Hero)';
+      var line = '2016-12-15: [Zone] ZoneChangeList.ProcessChanges() - id=1 local=False [entityName=Tyrande Whisperwind id=64 zone=PLAY zonePos=0 cardId=HERO_09a player=1] zone from  -> FRIENDLY PLAY (Hero)';
       var parserState = { players: [{name: 'artaios', entityId: 2, id: 1}], playerCount: 0 };
       var expected = {
-        cardName: 'Garrosh Hellscream',
+        cardName: 'Tyrande Whisperwind',
         entityId: 64,
-        cardId: 'HERO_01',
+        cardId: 'HERO_09a',
         playerId: 1,
         fromTeam: undefined,
         fromZone: undefined,
@@ -149,10 +148,10 @@ describe('hearthstone-log-watcher', function () {
     });
 
     it('emits game start event when two heros have moved', function () {
-      var line = '2016-07-14 23:07:34.867: [Zone] ZoneChangeList.ProcessChanges() - id=1 local=False [name=Garrosh Hellscream id=64 zone=PLAY zonePos=0 cardId=HERO_01 player=1] zone from  -> FRIENDLY PLAY (Hero)';
+      var line = '[Zone] ZoneChangeList.ProcessChanges() - id=1 local=False [entityName=Tyrande Whisperwind id=64 zone=PLAY zonePos=0 cardId=HERO_09a player=1] zone from  -> FRIENDLY PLAY (Hero)';
       var parserState = { players: [{name: 'artaios', entityId: 2, id: 1}, {name: 'foo', entityId: 3, id: 2}], playerCount: 0 };
       parserState = handleZoneChanges(line, parserState, emit, log);
-      line = '2016-07-14 23:07:34.870: [Zone] ZoneChangeList.ProcessChanges() - id=1 local=False [name=Anduin Wrynn id=66 zone=PLAY zonePos=0 cardId=HERO_09 player=2] zone from  -> OPPOSING PLAY (Hero)';
+      line = '[Zone] ZoneChangeList.ProcessChanges() - id=1 local=False [entityName=Jaina Proudmoore id=66 zone=PLAY zonePos=0 cardId=HERO_08 player=2] zone from  -> OPPOSING PLAY (Hero)';
       parserState = handleZoneChanges(line, parserState, emit, log);
       expect(parserState.playerCount).to.equal(2);
       expect(log.gameStart).to.have.been.calledWith('A game has started.')
