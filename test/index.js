@@ -59,7 +59,7 @@ describe('hearthstone-log-watcher', function () {
   });
 
   describe('executor', function () {
-    it('parses a log file', function (done) {
+    it.only('parses a log file', function (done) {
       this.timeout(250000);
       logWatcher.emit = sandbox.spy();
       var parserState = { players: [], playerCount: 0, gameOverCount: 0, reset: sandbox.spy() };
@@ -67,12 +67,12 @@ describe('hearthstone-log-watcher', function () {
         gameOverCount: 2,
         players: [
           {name: 'artaios', entityId: 2, id: 1, status: 'WON', team: 'FRIENDLY' },
-          {name: 'Souldef', entityId: 3, id: 2, status: 'LOST', team: 'OPPOSING'}
+          {name: 'MrKirik', entityId: 3, id: 2, status: 'LOST', team: 'OPPOSING'}
         ],
         playerCount: 2
       };
       var lineReader = readline.createInterface({
-        input: fs.createReadStream(__dirname + '/fixture/hearthstone_2017_12_15_16_04_00.log')
+        input: fs.createReadStream(__dirname + '/fixture/hearthstone_2018_04_05_09_03_26.log')
       });
 
       lineReader.on('line', function (line) {
@@ -99,11 +99,11 @@ describe('hearthstone-log-watcher', function () {
     });
 
     it('matches a new player name', function () {
-      var line = "2016-07-14 23:07:34.876: [Zone] ZoneChangeList.ProcessChanges() - processing index=66 change=powerTask=[power=[type=TAG_CHANGE entity=[id=2 cardId= name=artaios] tag=PLAYSTATE value=PLAYING] complete=False] entity=artaios srcZoneTag=INVALID srcPos= dstZoneTag=INVALID dstPos=";
+      var line = "2016-07-14 23:07:34.876: [Zone] ZoneChangeList.ProcessChanges() - processing index=66 change=powerTask=[power=[type=TAG_CHANGE entity=[id=2 cardId= name=artaios#2306] tag=PLAYSTATE value=PLAYING] complete=False] entity=artaios srcZoneTag=INVALID srcPos= dstZoneTag=INVALID dstPos=";
       var players = [{id: 1, entityId: 2}];
       players = findPlayerName(line, players);
       expect(players).to.have.lengthOf(1);
-      expect(players).to.deep.equal([{name: 'artaios', entityId: 2, id: 1}])
+      expect(players).to.deep.equal([{name: 'artaios#2306', entityId: 2, id: 1}])
     });
   });
 
@@ -161,9 +161,10 @@ describe('hearthstone-log-watcher', function () {
 
   describe('game over state', function () {
     it('handles a win/lost condition', function () {
-      var line = '2016-07-14 23:20:54.678: [Power] GameState.DebugPrintPower() - TAG_CHANGE Entity=artaios tag=PLAYSTATE value=LOST';
-      var parserState = { gameOverCount: 0, players: [{name: 'artaios', entityId: 2, id: 1 }, {name: 'foo', entityId: 3, id: 2}], playerCount: 0, reset: sandbox.spy()};
-      var expectedState = { gameOverCount: 1, players: [{name: 'artaios', entityId: 2, id: 1, status: 'LOST' }, {name: 'foo', entityId: 3, id: 2}], playerCount: 0 };
+      var line = '2018-04-05 09:24:29.426: [Power] PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=artaios#2306 tag=PLAYSTATE value=WON';
+      // var line = '2018-04-05 09:24:28.445: [Power] GameState.DebugPrintPower() - TAG_CHANGE Entity=artaios#2306 tag=PLAYSTATE value=WON';
+      var parserState = { gameOverCount: 0, players: [{name: 'artaios#2306', entityId: 2, id: 1 }, {name: 'foo', entityId: 3, id: 2}], playerCount: 0, reset: sandbox.spy()};
+      var expectedState = { gameOverCount: 1, players: [{name: 'artaios#2306', entityId: 2, id: 1, status: 'WON' }, {name: 'foo', entityId: 3, id: 2}], playerCount: 0 };
 
       parserState = handleGameOver(line, parserState, emit, log);
       expect(parserState.gameOverCount).to.deep.equal(expectedState.gameOverCount);
@@ -173,12 +174,12 @@ describe('hearthstone-log-watcher', function () {
     });
 
     it('emits game over event when both players have their status updated', function () {
-      var line = '2016-07-14 23:20:54.678: [Power] GameState.DebugPrintPower() - TAG_CHANGE Entity=artaios tag=PLAYSTATE value=LOST';
-      var parserState = { gameOverCount: 0, players: [{name: 'artaios', entityId: 2, id: 1 }, {name: 'Phaust', entityId: 3, id: 2}], playerCount: 2, reset: sandbox.spy() };
-      var expectedState = { gameOverCount: 2, players: [{name: 'artaios', entityId: 2, id: 1, status: 'LOST' }, {name: 'Phaust', entityId: 3, id: 2, status: 'WON'}], playerCount: 2 };
+      var line = '2018-04-05 09:24:28.445: [Power] GameState.DebugPrintPower() -     TAG_CHANGE Entity=MrKirik#2110 tag=PLAYSTATE value=LOST';
+      var parserState = { gameOverCount: 0, players: [{name: 'artaios#2306', entityId: 2, id: 1 }, {name: 'MrKirik#2110', entityId: 3, id: 2}], playerCount: 2, reset: sandbox.spy() };
+      var expectedState = { gameOverCount: 2, players: [{name: 'artaios#2306', entityId: 2, id: 1, status: 'WON' }, {name: 'MrKirik#2110', entityId: 3, id: 2, status: 'LOST'}], playerCount: 2 };
       parserState = handleGameOver(line, parserState, emit, log);
 
-      line = '2016-07-14 23:20:54.678: [Power] GameState.DebugPrintPower() - TAG_CHANGE Entity=Phaust tag=PLAYSTATE value=WON';
+      line = '2018-04-05 09:24:28.445: [Power] GameState.DebugPrintPower() -     TAG_CHANGE Entity=artaios#2306 tag=PLAYSTATE value=WON';
       parserState = handleGameOver(line, parserState, emit, log);
       expect(parserState.gameOverCount).to.equal(expectedState.gameOverCount);
       expect(parserState.players).to.deep.equal(expectedState.players);
