@@ -45,8 +45,8 @@ export default class extends EventEmitter {
     log.main('Log watcher started.');
     // Begin watching the Hearthstone log file.
     var fileSize = fs.statSync(self.options.logFile).size;
-    fs.watchFile(self.options.logFile, function (current, previous) {
-      if (current.mtime <= previous.mtime) { return; }
+    fs.watchFile(self.options.logFile, {interval: self.options.fsPollInterval}, function (current, previous) {
+      if (current.size <= previous.size) { return; }
 
       // We're only going to read the portion of the file that we have not read so far.
       var newFileSize = fs.statSync(self.options.logFile).size;

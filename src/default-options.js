@@ -3,7 +3,8 @@ import path from 'path';
 
 export default function (log) {
   let defaultOptions = {
-    endOfLineChar: os.EOL
+    endOfLineChar: os.EOL,
+    fsPollInterval: 250
   };
   // Determine the default location of the config and log files.
   if (/^win/.test(os.platform())) {
