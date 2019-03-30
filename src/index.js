@@ -23,6 +23,7 @@ export default class extends EventEmitter {
 
     log.main('config file path: %s', this.options.configFile);
     log.main('log file path: %s', this.options.logFile);
+    log.main('achievements log file path: %s', this.options.logFileAchievments);
 
     // Copy local config file to the correct location. Unless already exists.
     // Don't want to break other trackers
@@ -49,9 +50,14 @@ export default class extends EventEmitter {
     logWatcher.start(function(buffer) {
       self.parseBuffer(buffer, parserState);
     });
+    var achievementsLogWatcher = new FileWatcher(self.options.logFileAchievements);
+    achievementsLogWatcher.start(function(buffer) {
+      self.parseBuffer(buffer, parserState);
+    });
 
     self.stop = function () {
       logWatcher.stop();
+      achievementsLogWatcher.stop();
       delete self.stop;
     };
   }
