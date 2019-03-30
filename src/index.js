@@ -11,6 +11,7 @@ import handleZoneChanges from './handle-zone-changes';
 import handleGameOver from './handle-game-over';
 import setUpLogger from './set-up-debugger';
 import getDefaultOptions from './default-options';
+import FileWatcher from './file-watcher';
 
 const log = setUpLogger();
 
@@ -44,28 +45,13 @@ export default class extends EventEmitter {
 
     log.main('Log watcher started.');
     // Begin watching the Hearthstone log file.
-    var fileSize = fs.statSync(self.options.logFile).size;
-    fs.watchFile(self.options.logFile, function (current, previous) {
-      if (current.mtime <= previous.mtime) { return; }
-
-      // We're only going to read the portion of the file that we have not read so far.
-      var newFileSize = fs.statSync(self.options.logFile).size;
-      var sizeDiff = newFileSize - fileSize;
-      if (sizeDiff < 0) {
-        fileSize = 0;
-        sizeDiff = newFileSize;
-      }
-      var buffer = new Buffer(sizeDiff);
-      var fileDescriptor = fs.openSync(self.options.logFile, 'r');
-      fs.readSync(fileDescriptor, buffer, 0, sizeDiff, fileSize);
-      fs.closeSync(fileDescriptor);
-      fileSize = newFileSize;
-
+    var logWatcher = new FileWatcher(self.options.logFile);
+    logWatcher.start(function(buffer) {
       self.parseBuffer(buffer, parserState);
     });
 
     self.stop = function () {
-      fs.unwatchFile(self.options.logFile);
+      logWatcher.stop();
       delete self.stop;
     };
   }
