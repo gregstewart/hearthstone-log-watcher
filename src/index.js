@@ -12,6 +12,7 @@ import handleGameOver from './handle-game-over';
 import setUpLogger from './set-up-debugger';
 import getDefaultOptions from './default-options';
 import FileWatcher from './file-watcher';
+import handleCardGained from './handle-card-gained';
 
 const log = setUpLogger();
 
@@ -71,6 +72,7 @@ export default class extends EventEmitter {
     state.players = newPlayerIds(line, state.players);
     state.players = findPlayerName(line, state.players);
     state = handleGameOver(line, state, self.emit.bind(self), log);
+    state = handleCardGained(line, state, self.emit.bind(self), log);
 
     return state;
   }
