@@ -9,7 +9,7 @@ export default function (line, parserState, emit, log) {
       cardId: parts[3],
       cardType: parts[4],
       golden: parts[5],
-      rarity: parts[6]
+      qty_owned: parts[6]
     };
 
     if (packState.cards.length === 0) {
