@@ -24,7 +24,7 @@ export default class extends EventEmitter {
 
     log.main('config file path: %s', this.options.configFile);
     log.main('log file path: %s', this.options.logFile);
-    log.main('achievements log file path: %s', this.options.logFileAchievments);
+    log.main('achievements log file path: %s', this.options.logFileAchievements);
 
     // Copy local config file to the correct location. Unless already exists.
     // Don't want to break other trackers
