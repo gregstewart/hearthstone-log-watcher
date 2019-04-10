@@ -29,6 +29,7 @@ describe('file-watcher', function () {
 
   describe('start', function () {
     it('logs get detected', function (done) {
+      this.timeout(25000);
       fileWatcher.start(function(buffer) {
         var newLogs = buffer.toString();
         expect(newLogs).to.include('NotifyOfCardGained');
