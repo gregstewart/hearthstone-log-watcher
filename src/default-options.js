@@ -14,10 +14,12 @@ export default function (log) {
     }
     defaultOptions.logFile = path.join('C:', programFiles, 'Hearthstone', 'Hearthstone_Data', 'output_log.txt');
     defaultOptions.configFile = path.join(process.env.LOCALAPPDATA, 'Blizzard', 'Hearthstone', 'log.config');
+    defaultOptions.logFileAchievements = path.join('C:', programFiles, 'Hearthstone', 'Logs', 'Achievements.log');
   } else {
     log.main('OS X platform detected.');
     defaultOptions.logFile = path.join(process.env.HOME, 'Library', 'Logs', 'Unity', 'Player.log');
     defaultOptions.configFile = path.join(process.env.HOME, 'Library', 'Preferences', 'Blizzard', 'Hearthstone', 'log.config');
+    defaultOptions.logFileAchievements = path.join('Applications', 'Hearthstone', 'Logs', 'Achievements.log');
   }
 
   return defaultOptions;

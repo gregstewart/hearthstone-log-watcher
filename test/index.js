@@ -16,7 +16,7 @@ import fs from 'fs';
 import readline from 'readline';
 
 describe('hearthstone-log-watcher', function () {
-  let sandbox, log, emit, logWatcher, logFile, configFile;
+  let sandbox, log, emit, logWatcher, logFile, logFileAchievements, configFile;
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
@@ -24,9 +24,11 @@ describe('hearthstone-log-watcher', function () {
     emit = sandbox.spy();
 
     logFile = __dirname + '/artifacts/dummy.log';
+    logFileAchievements = __dirname + '/artifacts/dummy-achievements.log';
     configFile = __dirname + '/artifacts/dummy.config';
     logWatcher = new LogWatcher({
       logFile: logFile,
+      logFileAchievements: logFileAchievements,
       configFile: configFile
     });
   });
@@ -59,7 +61,7 @@ describe('hearthstone-log-watcher', function () {
   });
 
   describe('executor', function () {
-    it.only('parses a log file', function (done) {
+    it('parses a log file', function (done) {
       this.timeout(250000);
       logWatcher.emit = sandbox.spy();
       var parserState = { players: [], playerCount: 0, gameOverCount: 0, reset: sandbox.spy() };
@@ -84,6 +86,24 @@ describe('hearthstone-log-watcher', function () {
         expect(parserState.playerCount).to.deep.equal(expectedState.playerCount);
         expect(parserState.gameOverCount).to.deep.equal(expectedState.gameOverCount);
         expect(parserState.reset).to.have.been.called;
+        done();
+      });
+    });
+
+    it('parses achievements log file', function (done) {
+      logWatcher.emit = sandbox.spy();
+      var parserState = { players: [], playerCount: 0, gameOverCount: 0, reset: sandbox.spy() };
+      var lineReader = readline.createInterface({
+        input: fs.createReadStream(__dirname + '/fixture/Achievements.log')
+      });
+
+      lineReader.on('line', function (line) {
+        parserState = logWatcher.executor(line, parserState)
+      });
+
+      lineReader.on('close', function() {
+        expect(parserState.reset).not.to.have.been.called;
+        expect(logWatcher.emit).to.have.been.calledOnce;
         done();
       });
     });
@@ -160,7 +180,7 @@ describe('hearthstone-log-watcher', function () {
   });
 
   describe('game over state', function () {
-    it('handles a win/lost condition', function () {
+    it.skip('handles a win/lost condition', function () {
       var line = '2018-04-05 09:24:29.426: [Power] PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=artaios#2306 tag=PLAYSTATE value=WON';
       // var line = '2018-04-05 09:24:28.445: [Power] GameState.DebugPrintPower() - TAG_CHANGE Entity=artaios#2306 tag=PLAYSTATE value=WON';
       var parserState = { gameOverCount: 0, players: [{name: 'artaios#2306', entityId: 2, id: 1 }, {name: 'foo', entityId: 3, id: 2}], playerCount: 0, reset: sandbox.spy()};

@@ -1,0 +1,26 @@
+D 15:07:59.7666234 NetCache.OnProfileNotices(): sending notices to DialogManager::OnNewNotices
+D 15:07:59.7696236 NetCache.OnProfileNotices(): sending notices to AdventureProgressMgr::OnNewNotices
+D 15:07:59.7696236 NetCache.OnProfileNotices(): sending notices to AchieveManager::OnNewNotices
+D 15:07:59.7706235 NetCache.OnProfileNotices(): sending notices to GenericRewardChestNoticeManager::OnNewNotices
+D 15:07:59.7706235 NetCache.OnProfileNotices(): sending notices to AccountLicenseMgr::OnNewNotices
+D 15:07:59.7716244 NetCache.OnProfileNotices(): sending notices to FixedRewardsMgr::OnNewNotices
+D 15:07:59.7776244 NetCache.OnProfileNotices(): sending notices to PopupDisplayManager::OnNewNotices
+D 15:07:59.7786245 NetCache.OnProfileNotices(): sending notices to StoreManager::OnNewNotices
+D 15:07:59.7796235 NetCache.OnProfileNotices(): sending notices to GeneralStorePacksPane::OnNewNotices
+D 15:07:59.7796235 NetCache.OnProfileNotices(): sending notices to DialogManager::OnNewNotices
+D 15:07:59.7796235 NetCache.OnProfileNotices(): sending notices to AdventureProgressMgr::OnNewNotices
+D 15:07:59.7796235 NetCache.OnProfileNotices(): sending notices to AchieveManager::OnNewNotices
+D 15:07:59.7796235 NetCache.OnProfileNotices(): sending notices to GenericRewardChestNoticeManager::OnNewNotices
+D 15:07:59.7796235 NetCache.OnProfileNotices(): sending notices to AccountLicenseMgr::OnNewNotices
+D 15:07:59.7796235 NetCache.OnProfileNotices(): sending notices to FixedRewardsMgr::OnNewNotices
+D 15:07:59.7796235 NetCache.OnProfileNotices(): sending notices to PopupDisplayManager::OnNewNotices
+D 15:07:59.7796235 NetCache.OnProfileNotices(): sending notices to StoreManager::OnNewNotices
+D 15:07:59.7796235 NetCache.OnProfileNotices(): sending notices to GeneralStorePacksPane::OnNewNotices
+D 15:08:07.2131614 PopupDisplayManager: Calling AllAchievesShownListeners callbacks
+D 15:08:21.3775598 PopupDisplayManager: adding 0 rewards to load total=0
+D 15:08:54.0669559 NotifyOfCardGained: [name=Booty Bay Bookie cardId=TRL_504 type=MINION] NORMAL 1
+D 15:08:54.0679811 NotifyOfCardGained: [name=Ticket Scalper cardId=TRL_015 type=MINION] NORMAL 2
+D 15:08:54.0709580 NotifyOfCardGained: [name=Dragon Roar cardId=TRL_362 type=SPELL] NORMAL 1
+D 15:08:54.0709580 NotifyOfCardGained: [name=Sharkfin Fan cardId=TRL_507 type=MINION] GOLDEN 1
+D 15:08:54.0758987 NotifyOfCardGained: [name=Amani War Bear cardId=TRL_550 type=MINION] NORMAL 1
+D 15:09:42.8429143 PopupDisplayManager: adding 0 rewards to load total=0

@@ -11,6 +11,8 @@ import handleZoneChanges from './handle-zone-changes';
 import handleGameOver from './handle-game-over';
 import setUpLogger from './set-up-debugger';
 import getDefaultOptions from './default-options';
+import FileWatcher from './file-watcher';
+import handleCardGained from './handle-card-gained';
 
 const log = setUpLogger();
 
@@ -22,6 +24,7 @@ export default class extends EventEmitter {
 
     log.main('config file path: %s', this.options.configFile);
     log.main('log file path: %s', this.options.logFile);
+    log.main('achievements log file path: %s', this.options.logFileAchievements);
 
     // Copy local config file to the correct location. Unless already exists.
     // Don't want to break other trackers
@@ -44,28 +47,18 @@ export default class extends EventEmitter {
 
     log.main('Log watcher started.');
     // Begin watching the Hearthstone log file.
-    var fileSize = fs.statSync(self.options.logFile).size;
-    fs.watchFile(self.options.logFile, function (current, previous) {
-      if (current.mtime <= previous.mtime) { return; }
-
-      // We're only going to read the portion of the file that we have not read so far.
-      var newFileSize = fs.statSync(self.options.logFile).size;
-      var sizeDiff = newFileSize - fileSize;
-      if (sizeDiff < 0) {
-        fileSize = 0;
-        sizeDiff = newFileSize;
-      }
-      var buffer = new Buffer(sizeDiff);
-      var fileDescriptor = fs.openSync(self.options.logFile, 'r');
-      fs.readSync(fileDescriptor, buffer, 0, sizeDiff, fileSize);
-      fs.closeSync(fileDescriptor);
-      fileSize = newFileSize;
-
+    var logWatcher = new FileWatcher(self.options.logFile);
+    logWatcher.start(function(buffer) {
+      self.parseBuffer(buffer, parserState);
+    });
+    var achievementsLogWatcher = new FileWatcher(self.options.logFileAchievements);
+    achievementsLogWatcher.start(function(buffer) {
       self.parseBuffer(buffer, parserState);
     });
 
     self.stop = function () {
-      fs.unwatchFile(self.options.logFile);
+      logWatcher.stop();
+      achievementsLogWatcher.stop();
       delete self.stop;
     };
   }
@@ -79,6 +72,7 @@ export default class extends EventEmitter {
     state.players = newPlayerIds(line, state.players);
     state.players = findPlayerName(line, state.players);
     state = handleGameOver(line, state, self.emit.bind(self), log);
+    state = handleCardGained(line, state, self.emit.bind(self), log);
 
     return state;
   }
