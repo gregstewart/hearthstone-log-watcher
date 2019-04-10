@@ -180,7 +180,7 @@ describe('hearthstone-log-watcher', function () {
   });
 
   describe('game over state', function () {
-    it('handles a win/lost condition', function () {
+    it.skip('handles a win/lost condition', function () {
       var line = '2018-04-05 09:24:29.426: [Power] PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=artaios#2306 tag=PLAYSTATE value=WON';
       // var line = '2018-04-05 09:24:28.445: [Power] GameState.DebugPrintPower() - TAG_CHANGE Entity=artaios#2306 tag=PLAYSTATE value=WON';
       var parserState = { gameOverCount: 0, players: [{name: 'artaios#2306', entityId: 2, id: 1 }, {name: 'foo', entityId: 3, id: 2}], playerCount: 0, reset: sandbox.spy()};
