@@ -19,6 +19,7 @@ export default function (log) {
     log.main('OS X platform detected.');
     defaultOptions.logFile = path.join(process.env.HOME, 'Library', 'Logs', 'Unity', 'Player.log');
     defaultOptions.configFile = path.join(process.env.HOME, 'Library', 'Preferences', 'Blizzard', 'Hearthstone', 'log.config');
+    defaultOptions.logFileAchievements = path.join('Applications', 'Hearthstone', 'Logs', 'Achievements.log');
   }
 
   return defaultOptions;
