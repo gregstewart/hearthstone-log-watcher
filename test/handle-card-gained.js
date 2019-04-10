@@ -57,31 +57,31 @@ describe('handle-card-gained', function () {
           cardName: "Booty Bay Bookie",
           cardType: "MINION",
           golden: "NORMAL",
-          rarity: "1"
+          qty_owned: "1"
         }, {
           cardId: "TRL_015",
           cardName: "Ticket Scalper",
           cardType: "MINION",
           golden: "NORMAL",
-          rarity: "2"
+          qty_owned: "2"
         }, {
           cardId: "TRL_362",
           cardName: "Dragon Roar",
           cardType: "SPELL",
           golden: "NORMAL",
-          rarity: "1"
+          qty_owned: "1"
         }, {
           cardId: "TRL_507",
           cardName: "Sharkfin Fan",
           cardType: "MINION",
           golden: "GOLDEN",
-          rarity: "1"
+          qty_owned: "1"
         }, {
           cardId: "TRL_550",
           cardName: "Amani War Bear",
           cardType: "MINION",
           golden: "NORMAL",
-          rarity: "1"
+          qty_owned: "1"
         }],
         firstLogTime: "15:08:54.0669559"
       };
